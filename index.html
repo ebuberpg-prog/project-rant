@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rant — Voice to Structured Spec</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app">
+    <!-- Top Navigation -->
+    <header class="top-nav">
+      <div class="top-nav__inner">
+        <div class="top-nav__brand">
+          <button id="mobileBackBtn" class="mobile-back-btn hidden" aria-label="Go back">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="20" height="20">
+              <path d="M19 12H5"/>
+              <path d="M12 19l-7-7 7-7"/>
+            </svg>
+          </button>
+          <h1 class="logo">Rant</h1>
+        </div>
+        <div class="top-nav__config">
+          <input type="password" id="apiKey" placeholder="Wavespeed.ai API Key" class="text-input text-input--compact">
+          <select id="modelSelect" class="model-select">
+            <option value="openai/gpt-audio-mini">GPT Audio Mini — native audio</option>
+            <option value="openai/gpt-audio">GPT Audio — native audio</option>
+            <option value="google/gemini-3.1-flash-lite-preview">Gemini 3.1 Flash Lite — transcribes first</option>
+          </select>
+        </div>
+      </div>
+    </header>
+
+    <div class="app-body">
+      <!-- History Sidebar -->
+      <aside class="history-sidebar" id="historySidebar">
+        <div class="history-header">
+          <span class="caption-uppercase">History</span>
+          <button id="clearHistoryBtn" class="history-clear-btn" title="Clear all history">Clear</button>
+        </div>
+        <div class="history-list" id="historyList">
+          <p class="history-empty body-sm">No rants yet. Record your first!</p>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="main">
+        <!-- Recording View -->
+        <section id="recordingView" class="view view--active">
+          <div class="hero-band">
+            <div class="gradient-orb gradient-orb--lavender" aria-hidden="true"></div>
+            <div class="hero-band__content">
+              <p class="caption-uppercase hero-band__label">Voice to Structured Spec</p>
+              <h2 class="display-mega">Rant. Refine.<br>Ship.</h2>
+              <p class="body-md hero-band__subhead">Record your unstructured thoughts. Let AI turn them into executable PRDs.</p>
+            </div>
+          </div>
+
+          <div class="recorder-container">
+            <div class="recorder-status">
+              <span id="statusText" class="body-md status-text">Pick a mode, then tap the mic</span>
+              <span id="timer" class="timer display-md">00:00</span>
+            </div>
+
+            <div class="waveform-card">
+              <canvas id="waveform" class="waveform" width="600" height="120"></canvas>
+            </div>
+
+            <div class="mode-selector">
+              <button class="mode-btn mode-btn--active" data-mode="prd" id="modePrd">
+                <span class="badge-pill">PRD</span>
+                <span class="body-sm mode-label">Feature</span>
+              </button>
+              <button class="mode-btn" data-mode="fix" id="modeFix">
+                <span class="badge-pill">Fix</span>
+                <span class="body-sm mode-label">Bug / Issue</span>
+              </button>
+              <button class="mode-btn" data-mode="rant" id="modeRant">
+                <span class="badge-pill">Rant</span>
+                <span class="body-sm mode-label">Structure</span>
+              </button>
+            </div>
+
+            <button id="recordBtn" class="record-btn" aria-label="Start recording">
+              <svg class="mic-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M12 2a3 3 0 0 1 3 3v7a3 3 0 0 1-6 0V5a3 3 0 0 1 3-3Z"/>
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                <line x1="12" y1="19" x2="12" y2="22"/>
+                <line x1="8" y1="22" x2="16" y2="22"/>
+              </svg>
+              <span class="button record-label">Record</span>
+            </button>
+
+            <div class="recorder-hints" id="modeHint">
+              <p class="body-sm"><strong>PRD mode:</strong> Describe a feature or product idea. The AI will ask about users, scope, and tech stack, then build a full PRD.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Processing View -->
+        <section id="processingView" class="view">
+          <div class="processing-container">
+            <div class="spinner"></div>
+            <h2 id="processingTitle" class="display-md">Processing your rant...</h2>
+            <p id="processingSubtitle" class="body-md muted">This may take a moment</p>
+          </div>
+        </section>
+
+        <!-- Conversation View -->
+        <section id="conversationView" class="view">
+          <div class="conversation-container">
+            <div id="chatMessages" class="chat-messages"></div>
+            
+            <div class="chat-input-area">
+              <div class="input-row">
+                <button id="chatRecordBtn" class="chat-record-btn" aria-label="Record voice response">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="20" height="20">
+                    <path d="M12 2a3 3 0 0 1 3 3v7a3 3 0 0 1-6 0V5a3 3 0 0 1 3-3Z"/>
+                    <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                  </svg>
+                </button>
+                <textarea id="chatInput" class="chat-input text-input" placeholder="Type your response..." rows="1"></textarea>
+                <button id="sendBtn" class="send-btn button-primary" aria-label="Send message">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="20" height="20">
+                    <line x1="22" y1="2" x2="11" y2="13"/>
+                    <polygon points="22 2 15 22 11 13 2 9"/>
+                  </svg>
+                </button>
+              </div>
+              <div id="chatRecordingIndicator" class="chat-recording-indicator hidden">
+                <span class="recording-dot"></span> <span class="body-sm">Recording...</span> <span id="chatTimer" class="body-sm">00:00</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Spec View -->
+        <section id="specView" class="view">
+          <div class="spec-container">
+            <div class="spec-header">
+              <h2 class="display-sm">Your Structured Spec</h2>
+              <div class="spec-actions">
+                <button id="copyBtn" class="button-outline action-btn">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                  </svg>
+                  <span>Copy</span>
+                </button>
+                <button id="downloadBtn" class="button-primary action-btn action-btn--primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" y1="15" x2="12" y2="3"/>
+                  </svg>
+                  <span>Download .md</span>
+                </button>
+                <button id="newRantBtn" class="button-outline action-btn">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16">
+                    <line x1="12" y1="5" x2="12" y2="19"/>
+                    <line x1="5" y1="12" x2="19" y2="12"/>
+                  </svg>
+                  <span>New Rant</span>
+                </button>
+              </div>
+            </div>
+            <div id="specPreview" class="spec-preview"></div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <div id="toast" class="toast hidden">
+      <span id="toastMessage" class="body-sm"></span>
+    </div>
+  </div>
+
+  <script src="prompts.js"></script>
+  <script src="recorder.js"></script>
+  <script src="api.js"></script>
+  <script src="export.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
