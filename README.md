@@ -2,6 +2,20 @@
 
 **Rant** — Voice to Structured Spec. Record your unstructured thoughts, let AI turn them into executable PRDs.
 
+## Native macOS app
+
+The native Mac app adds global voice dictation and transcript cleanup alongside the original PRD, fix, and structured-note workflows. Press **⌘⌥Space** in any app to record and insert the cleaned text. Speech recognition and read-aloud use macOS; GPT cleanup uses the ChatGPT-plan connection for eligible accounts.
+
+Build and launch it from `macOS/RantMac`:
+
+```bash
+cd macOS/RantMac
+./build-app.sh
+open dist/Rant.app
+```
+
+See [the Mac app guide](macOS/RantMac/README.md) for permissions and setup. The existing browser app remains available below.
+
 ## What It Does
 
 1. **Record** — Hit the mic button and rant about your app idea, bug, or feature
