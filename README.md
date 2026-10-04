@@ -4,9 +4,9 @@
 
 ## Native macOS app
 
-The native Mac app adds global voice dictation and transcript cleanup alongside the original PRD, fix, and structured-note workflows. Press **⌘⌥Space** in any app to record and insert the cleaned text. Speech recognition and read-aloud use macOS; GPT cleanup uses the ChatGPT-plan connection for eligible accounts.
+Rant includes a native macOS voice workspace with global dictation, GPT text cleanup, read-aloud, history, and PRD, bug-fix, and structured-note modes. Speech recognition and read-aloud use macOS. GPT cleanup sends transcript text only after you connect an eligible ChatGPT account.
 
-Build and launch it from `macOS/RantMac`:
+Requires macOS 14 or later and Xcode command-line tools. Build and launch it from the repository root:
 
 ```bash
 cd macOS/RantMac
@@ -14,7 +14,9 @@ cd macOS/RantMac
 open dist/Rant.app
 ```
 
-See [the Mac app guide](macOS/RantMac/README.md) for permissions and setup. The existing browser app remains available below.
+Use the displayed global shortcut to start and finish dictation. Rant tries **⌘⌥Space** first and uses **⌃⌥Space** if that shortcut is already taken. The active shortcut appears in the Dictate view and Settings. Grant Microphone and Speech Recognition access to dictate; grant Accessibility access for automatic insertion into other apps. If insertion cannot be completed, Rant copies the text to the clipboard.
+
+See [the Mac app guide](macOS/RantMac/README.md) for setup, shortcut troubleshooting, account connection, and privacy details. The browser app remains available below.
 
 ## What It Does
 

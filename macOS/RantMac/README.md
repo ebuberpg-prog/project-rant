@@ -1,8 +1,8 @@
 # Rant for macOS
 
-Rant is a native macOS voice workspace. Press **⌘⌥Space** in any app to start or finish a dictation. Speech recognition runs locally through macOS. When connected, GPT cleans the transcript using the ChatGPT plan authorization for this open-source app. The result is copied automatically and typed into the previously active app when macOS Accessibility permission is enabled.
+Rant is a native macOS voice workspace for dictation and spoken product notes. Its global shortcut starts and finishes dictation while you work in another app. Rant tries **⌘⌥Space** first; if macOS reports a conflict, it tries **⌃⌥Space**. The active shortcut is shown in the Dictate view and Settings.
 
-The app also keeps the original Rant workflows: PRD drafting, bug-fix briefs, and structured notes. Read-aloud uses the macOS system voice. Audio is not uploaded to ChatGPT.
+Speech recognition and read-aloud use macOS. Connect an eligible ChatGPT account to clean up dictation, draft PRDs, create bug-fix briefs, or structure notes. Rant sends transcript text for GPT cleanup; it does not send recorded audio to ChatGPT. Dictations are copied to the clipboard automatically, and Rant can type them into the app you were using when Accessibility access is enabled.
 
 ## Build
 
@@ -13,15 +13,25 @@ Requires macOS 14 or later and Xcode command-line tools.
 open dist/Rant.app
 ```
 
-The first recording asks for Microphone and Speech Recognition permissions. Enable Accessibility in **Rant → Settings → Allow Accessibility** to let the global shortcut insert text into the app you were using. Without Accessibility, the result still goes to the clipboard.
+The first recording asks for Microphone and Speech Recognition access. macOS may require you to enable them in **System Settings → Privacy & Security**. Enable Accessibility in **Rant → Settings → Allow Accessibility** to let Rant type into other apps. If Rant cannot safely activate the target app or Accessibility is unavailable, the finished text remains on the clipboard.
+
+The build script creates an ad hoc signed app for local use. It does not create a Developer ID signed or notarized release.
+
+## Shortcut troubleshooting
+
+- Check the active key combination in the Dictate view or Settings. The displayed combination is the one Rant registered.
+- If both shortcuts are unavailable, quit another app that owns a shortcut or change that app’s shortcut, then relaunch Rant.
+- If the global shortcut is unavailable, open Rant and use **Start speaking** as a fallback.
+- If the shortcut records but does not type into another app, grant Rant Accessibility access. You can still paste the clipboard result manually.
+- The current macOS language must support on-device Speech Recognition. Rant reports an error if that language is unavailable.
 
 ## ChatGPT plan usage
 
-Choose **Continue with ChatGPT** in Settings and approve plan use for Rant in the browser. Eligible ChatGPT Plus and Pro accounts can use the open-source app integration. The model picker reflects the models available to that signed-in account. GPT cleanup sends transcript text to the Responses API with `store: false`; audio stays on-device.
+Choose **Continue with ChatGPT** in Settings and approve plan use for Rant in the browser. Access depends on account eligibility and availability of the open-source app integration. The model picker lists models available to the signed-in account. GPT cleanup streams transcript text through the Responses API with `store: false`; audio remains on this Mac.
 
 ## Privacy and storage
 
 - Microphone audio is processed by macOS speech recognition and is not saved by Rant.
-- Recent transcripts are stored in this Mac user account’s preferences.
-- ChatGPT OAuth credentials are stored in the macOS Keychain.
-- GPT cleanup sends text only after ChatGPT plan use is authorized.
+- Recent cleaned transcripts are stored locally in this Mac user account’s preferences. Clear history in the History view.
+- ChatGPT OAuth credentials are stored in the macOS Keychain. Signing out attempts to revoke the renewable session and clears the local credentials.
+- Rant sends transcript text to OpenAI only after you authorize ChatGPT plan use. Requests set `store: false`.
