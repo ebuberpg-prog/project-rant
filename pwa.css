@@ -1,0 +1,76 @@
+:root {
+  color-scheme: light;
+  --paper: #f5f3ed;
+  --surface: #fffefa;
+  --ink: #252729;
+  --muted: #73746f;
+  --line: #dfddd5;
+  --red: #c93d31;
+  --green: #47745d;
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.shell { max-width: 760px; margin: auto; padding: 24px 22px 32px; }
+.topbar { height: 44px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 48px; }
+.brand { display: flex; align-items: center; gap: 9px; color: var(--ink); text-decoration: none; font-size: 18px; font-weight: 700; }
+.brand-mark { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 9px; background: var(--ink); color: var(--paper); font-size: 20px; }
+
+.card {
+  padding: clamp(26px, 6vw, 56px);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--surface);
+  box-shadow: 0 10px 40px #27251a0a;
+}
+
+.eyebrow { color: var(--muted); font-size: 11px; font-weight: 700; letter-spacing: .14em; }
+h1 { margin: 18px 0 14px; font-size: clamp(36px, 7vw, 58px); line-height: 1.04; text-wrap: balance; }
+h1 span { color: var(--red); }
+.intro { max-width: 460px; margin: 0 0 30px; color: var(--muted); font-size: 16px; line-height: 1.55; text-wrap: pretty; }
+
+.connection { display: flex; align-items: center; gap: 9px; padding: 13px 14px; border: 1px solid var(--line); border-radius: 9px; color: var(--muted); font-size: 13px; }
+.dot { width: 8px; height: 8px; border-radius: 50%; background: #b8b7b1; flex: none; }
+.connection--ready .dot { background: var(--green); }
+.connection--offline .dot { background: var(--red); }
+.helper { margin-top: 10px; padding: 14px 16px; border-radius: 9px; background: #f7f0e7; color: #615b50; font-size: 13px; line-height: 1.5; }
+.helper p { margin: 0 0 6px; }
+.helper a { color: var(--ink); font-weight: 600; }
+
+.controls { display: grid; gap: 10px; margin-top: 26px; }
+.controls label { color: var(--muted); font-size: 12px; font-weight: 650; }
+select { height: 46px; padding: 0 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); color: var(--ink); font: inherit; font-size: 14px; }
+.record-button, .secondary-button, .quiet-button { font: inherit; cursor: pointer; }
+.record-button { height: 52px; margin-top: 9px; display: flex; align-items: center; justify-content: center; gap: 10px; border: 0; border-radius: 9px; background: var(--red); color: white; font-size: 15px; font-weight: 650; }
+.record-button:disabled, .secondary-button:disabled { opacity: .45; cursor: not-allowed; }
+.record-button.is-recording { background: #332e2c; }
+.record-icon { width: 11px; height: 11px; border-radius: 50%; background: currentColor; }
+.record-button.is-recording .record-icon { border-radius: 3px; }
+.secondary-button { height: 44px; border: 1px solid var(--line); border-radius: 9px; background: transparent; color: var(--ink); font-size: 14px; font-weight: 600; }
+.status { min-height: 22px; margin: 14px 0 0; color: var(--muted); font-size: 13px; }
+
+.result { margin-top: 26px; padding-top: 22px; border-top: 1px solid var(--line); }
+.result-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.result-header h2 { margin: 0; font-size: 16px; }
+.result-header > div { display: flex; gap: 4px; }
+.quiet-button { padding: 8px; border: 0; background: transparent; color: var(--muted); font-size: 12px; }
+.quiet-button:hover { color: var(--ink); }
+.result pre { margin: 16px 0 0; overflow-wrap: anywhere; white-space: pre-wrap; font: inherit; font-size: 14px; line-height: 1.65; }
+.hidden { display: none !important; }
+footer { padding: 20px 4px 0; color: var(--muted); font-size: 12px; line-height: 1.5; text-wrap: pretty; }
+
+@media (max-width: 520px) {
+  .shell { padding: 16px 14px 24px; }
+  .topbar { margin-bottom: 28px; }
+  .card { padding: 25px 20px; border-radius: 14px; }
+  .intro { font-size: 15px; }
+  footer { padding-inline: 8px; }
+}

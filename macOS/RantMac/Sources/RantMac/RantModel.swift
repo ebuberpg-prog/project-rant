@@ -248,6 +248,45 @@ final class RantModel: ObservableObject {
 
     func selectModel(_ slug: String) { planClient.setModel(slug) }
 
+    func companionSnapshot() -> [String: Any] {
+        [
+            "connected": canUseGPT,
+            "recording": isRecording,
+            "starting": isStarting,
+            "processing": isProcessing,
+            "signingIn": isSigningIn,
+            "transcript": rawTranscript,
+            "output": outputText,
+            "status": status,
+            "error": errorMessage as Any? ?? NSNull()
+        ]
+    }
+
+    func companionStartRecording(modeName: String?) {
+        guard !isStarting && !isRecording && !isProcessing else { return }
+        if let modeName, let selected = RantMode(rawValue: modeName) { mode = selected }
+        startedFromShortcut = false
+        targetBundleID = nil
+        isStarting = true
+        Task { await beginRecording() }
+    }
+
+    func companionStopRecording() {
+        guard isRecording else { return }
+        Task { await finishRecording() }
+    }
+
+    func companionSignIn() {
+        Task { await signIn() }
+    }
+
+    func companionRewrite(_ text: String, modeName: String?, styleName: String?) async throws -> String {
+        guard canUseGPT else { throw PlanAPIError.responseFailed }
+        let selectedMode = modeName.flatMap(RantMode.init(rawValue:)) ?? .dictate
+        let selectedStyle = styleName.flatMap(RewriteStyle.init(rawValue:)) ?? .natural
+        return try await planClient.rewrite(text, instructions: instructions(for: selectedMode, style: selectedStyle))
+    }
+
     func requestAccessibility() { PasteBridge.requestAccessibilityPermission() }
 
     func clearHistory() {

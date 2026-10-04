@@ -1,0 +1,15 @@
+{
+  "id": "./pwa.html",
+  "name": "Rant Voice Studio",
+  "short_name": "Rant",
+  "description": "Turn spoken thoughts into clear writing with Rant for Mac and your ChatGPT plan.",
+  "start_url": "./pwa.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f5f3ed",
+  "theme_color": "#f5f3ed",
+  "icons": [
+    { "src": "./icons/rant.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

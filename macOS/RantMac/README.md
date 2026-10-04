@@ -29,6 +29,10 @@ The build script creates an ad hoc signed app for local use. It does not create 
 
 Choose **Continue with ChatGPT** in Settings and approve plan use for Rant in the browser. Access depends on account eligibility and availability of the open-source app integration. The model picker lists models available to the signed-in account. GPT cleanup streams transcript text through the Responses API with `store: false`; audio remains on this Mac.
 
+## GitHub Pages PWA companion
+
+When Rant is open, it provides a loopback-only companion for the GitHub Pages PWA on port `41739`. The PWA can start/stop Mac-side recording and read the completed result. The listener binds to `127.0.0.1` and only allows the project Pages origin plus `localhost:8080` development origins. It does not expose the ChatGPT token to the browser. Safari currently blocks this hosted-page-to-loopback connection; use Chrome for the PWA or use Rant’s native window directly.
+
 ## Privacy and storage
 
 - Microphone audio is processed by macOS speech recognition and is not saved by Rant.

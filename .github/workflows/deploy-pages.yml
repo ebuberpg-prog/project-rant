@@ -1,0 +1,49 @@
+name: Deploy Rant PWA to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'pwa.html'
+      - 'pwa.css'
+      - 'pwa.js'
+      - 'manifest.webmanifest'
+      - 'service-worker.js'
+      - 'icons/**'
+      - '.github/workflows/deploy-pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+      - name: Assemble PWA site
+        run: |
+          mkdir -p _site/icons
+          cp pwa.html _site/index.html
+          cp pwa.html _site/pwa.html
+          cp pwa.css pwa.js manifest.webmanifest service-worker.js _site/
+          cp icons/rant.svg _site/icons/
+      - name: Upload PWA
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './_site'
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4

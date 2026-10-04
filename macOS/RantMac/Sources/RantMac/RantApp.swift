@@ -26,6 +26,7 @@ struct RantApp: App {
 final class AppDelegate: NSObject, NSApplicationDelegate {
     weak var model: RantModel?
     private var hotKey = GlobalHotKey()
+    private var companion: LocalCompanion?
     private var shortcutLabel: String?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
@@ -43,6 +44,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     @MainActor func attach(_ model: RantModel) {
         self.model = model
         model.setShortcutLabel(shortcutLabel)
+        if companion == nil { companion = LocalCompanion(model: model) }
     }
 
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
